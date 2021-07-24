@@ -5,31 +5,22 @@
 #include <cstring>
 
 template<typename T>
-concept whitelist = requires(T c){
-    std::is_same<typename T::value_type, char>::value
-        || std::is_same<typename T::value_type, wchar_t>::value
-        || std::is_same<typename T::value_type, unsigned char>::value
-        || std::is_same<typename T::value_type, char8_t>::value
-        || std::is_same<typename T::value_type, char16_t>::value
-        || std::is_same<typename T::value_type, char32_t>::value;
-
-    std::is_same<T, std::vector<typename T::value_type>>::value
-        || std::is_same<T, std::basic_string<typename T::value_type>>::value;
+concept indexable = requires(T c){
+        c[0];
 };
 
-template<whitelist T>
-bool strToBool(T str){
-    bool comedy = false;
-    size_t n = str.size() * sizeof(decltype(((str[0]))));
+template<typename T>
+bool str_cmp(T* __restrict s1, T* __restrict s2){
+    return !std::tolower(*s1)&&!*s2?std::tolower(*s1)==*s2:std::tolower(*s1)==*s2?str_cmp(++s1,++s2):false;
+}
 
-    if( std::tolower(str[0]) == 'f' && 
-        std::tolower(str[1]) == 'a' && 
-        std::tolower(str[2]) == 'l' && 
-        std::tolower(str[3]) == 's' && 
-        std::tolower(str[4]) == 'e'){
-        n++;
-        comedy=true;
-    }
+template<indexable T>
+bool strToBool(T str){
+
+    size_t n = 6 * sizeof(str[0]);
+    typename std::remove_reference<decltype(str[0])>::type s2[] = {'f', 'a', 'l', 's', 'e', '\0'};
+    bool comedy = str_cmp(&str[0], s2);
+    n -= comedy * sizeof(str[0]);
 
     void* mem = malloc(n);
     void* memto = mem;
@@ -38,11 +29,9 @@ bool strToBool(T str){
         *((char*)(mem)) = 0;
         memto = (void*)(((size_t)(mem)+1));
     }
-    memcpy(memto, str.data(), n);
+    memcpy(memto, &str[0], n);
 
-    bool* ret = (bool*)(mem);
-
-    return *ret;
+    return *(char*)(mem);
 }
 
 void testBool(bool b){
@@ -60,11 +49,17 @@ int main(){
     std::wstring tws(L"True");
     std::wstring fws(L"False");
 
+    std::u32string tus(U"True");
+    std::u32string fus(U"False");
+
     std::vector<char> tv = { 'T', 'r', 'u', 'e'};
     std::vector<char> fv = { 'F', 'a', 'l', 's', 'e'};
 
     std::string_view tsv(ts);
     std::string_view fsv(fs);
+
+    const char* tcs = "True";
+    const char* fcs = "False";
 
     printf("%s\n", "Strings:");
     testBool(strToBool(ts));
@@ -81,4 +76,12 @@ int main(){
     printf("%s\n", "String view:");
     testBool(strToBool(tsv));
     testBool(strToBool(fsv));
+
+    printf("%s\n", "C String:");
+    testBool(strToBool(tcs));
+    testBool(strToBool(fcs));
+
+    printf("%s\n", "Unicode String:");
+    testBool(strToBool(tus));
+    testBool(strToBool(fus));
 }
