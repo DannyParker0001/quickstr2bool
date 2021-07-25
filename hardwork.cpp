@@ -3,6 +3,7 @@
 #include <vector>
 #include <type_traits>
 #include <cstring>
+#include <immintrin.h>
 
 template<typename T>
 concept indexable = requires(T c){
@@ -42,13 +43,21 @@ struct when<the<When, The>...> : the<When, The>... {
 template <typename ... them>
 when(them...)->when<them...>;
 
+typedef char troll __attribute__((__vector_size__(8)));
+
+template<typename T=char>
+troll laughtrack(T* i){
+    auto vals = *(troll*)(i);
+    return __builtin_shufflevector(vals,vals,5,4,3,2,1,0,6,7);
+}
+
 template<indexable T>
 bool strToBool(T str){
 
-    size_t n = 6 * sizeof(str[0]);
+    size_t n = sizeof(char[6][sizeof(str[0])]);
     typename std::remove_reference<decltype(str[0])>::type s2[] = {'f', 'a', 'l', 's', 'e', '\0'};
     bool comedy = str_cmp(&str[0], s2);
-    n -= comedy * sizeof(str[0]);
+    n -= sizeof(char[comedy][sizeof(str[0])]);
 
     void* mem = malloc(n);
     void* memto = mem;
@@ -58,15 +67,23 @@ bool strToBool(T str){
             std::forward<bool>(comedy),
             [&](bool crying){
                 if(crying){
+                    *(decltype(laughtrack(&str[0]))*)(memto) = laughtrack(&str[0]);
+                } else{
+                    __builtin_assume(*(char*)mem == 2);
                     *((char*)(mem)) = 0;
                     memto = (void*)(((size_t)(mem)+1));
                 }
             }
+        },
+        the {
+            std::forward<bool>(!comedy),
+            [&](bool sad){
+                __builtin_assume(sad == true);
+                memcpy(memto, &str[0], n);
+            }
         }
     };
     laughing(true);
-
-    memcpy(memto, &str[0], n);
 
     return *(char*)(mem);
 }
