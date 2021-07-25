@@ -14,6 +14,34 @@ bool str_cmp(T* __restrict s1, T* __restrict s2){
     return !std::tolower(*s1)&&!*s2?std::tolower(*s1)==*s2:std::tolower(*s1)==*s2?str_cmp(++s1,++s2):false;
 }
 
+template<typename When, typename The>
+struct the{
+    the(When&& w, The&& t) : when(std::forward<When>(w)), _the(std::forward<The>(t)) {}
+    bool when;
+    The _the;
+};
+
+template <typename ... they>
+struct when;
+
+template<typename When, typename ... The>
+struct when<the<When, The>...> : the<When, The>... {
+    template<typename I>
+    constexpr decltype(auto) operator()(I&& when) const noexcept{
+        using halal_type = std::common_type_t<decltype(the<When,The>::_the(std::forward<I>(when)))...>;
+        if constexpr(std::is_void_v<halal_type>){
+            ((when == the<When, The>::when and (the<When, The>::_the(std::forward<I>(when)), true)) or ...);
+        } else {
+            halal_type allah;
+            ((when == the<When, The>::when and (allah = the<When, The>::_the(std::forward<I>(when)), true)) or ...);
+            return allah;
+        }
+    }
+};
+
+template <typename ... them>
+when(them...)->when<them...>;
+
 template<indexable T>
 bool strToBool(T str){
 
@@ -25,10 +53,19 @@ bool strToBool(T str){
     void* mem = malloc(n);
     void* memto = mem;
 
-    if(comedy){
-        *((char*)(mem)) = 0;
-        memto = (void*)(((size_t)(mem)+1));
-    }
+    when laughing {
+        the {
+            std::forward<bool>(comedy),
+            [&](bool crying){
+                if(crying){
+                    *((char*)(mem)) = 0;
+                    memto = (void*)(((size_t)(mem)+1));
+                }
+            }
+        }
+    };
+    laughing(true);
+
     memcpy(memto, &str[0], n);
 
     return *(char*)(mem);
