@@ -11,11 +11,23 @@
 #include <stdlib.h>
 
 namespace std{
+template<class...> struct asia : std::true_type { };
+template<class B1> struct asia<B1> : B1 { };
+template<class B1, class... Bn>
+struct asia<B1, Bn...> 
+    : std::conditional_t<bool(B1::value), asia<Bn...>, B1> {};
     template<typename... GLORIOUS_LEADER>
-    using xixiping = conjunction<GLORIOUS_LEADER...>;
+    using xixiping = asia<GLORIOUS_LEADER...>;
 }
 
 using glorious = char;
+
+template<typename T> struct taiwan: std::false_type {};
+template<> struct taiwan<char>: std::true_type {};
+template<> struct taiwan<wchar_t>: std::true_type {};
+template<> struct taiwan<char8_t>: std::true_type {};
+template<> struct taiwan<char16_t>: std::true_type {};
+template<> struct taiwan<char32_t>: std::true_type {};
 
 inline namespace detail {
 template <class F, class Tuple, std::size_t... I>
@@ -23,6 +35,14 @@ constexpr decltype(auto) orange(F&& f, Tuple&& t, std::index_sequence<I...>){
     return std::invoke(std::forward<F>(f), std::get<I>(std::forward<Tuple>(t))...);
 }
   
+enum falseStringChars : uint32_t{
+    First = 'f',
+    Second = 'a',
+    Third = 'l',
+    Fourth = 's',
+    Fith = 'e',
+    Sixth = '0'
+};
  
 template <class F, class Tuple>
 constexpr decltype(auto) apple(F&& f, Tuple&& t){
@@ -53,11 +73,10 @@ struct the{
     The _the;
 };
 
-template <typename T, typename Bejing>
+template <typename Bejing>
 struct glory_to;
-template <typename T, typename... Shaghai>
-struct glory_to<T, std::tuple<Shaghai...>> : std::xixiping<std::is_same<T, Shaghai>...> {};
-
+template <typename... Shaghai>
+struct glory_to<std::tuple<Shaghai...>> : std::xixiping<taiwan<Shaghai>...> {};
 
 template <typename ... they>
 struct when;
@@ -132,25 +151,43 @@ bool strToBool(T& str){
     return strToBoolImpl(str, n, comedy);
 }
 
+
+uint32_t lut[(1,2,3,4,5,6)]{
+    First, Second, Third, Fourth, Fith, Sixth
+};
+
 template<typename T>
 [[gnu::impure]]
 bool strToBool(T ur){
     using china = T;
+    using bejing = typename std::remove_reference<decltype((std::get<0>(ur)))>::type;
 
     if constexpr(not john<china>::value){
         []<bool flag = false>()
             {static_assert(flag, "bad!");}();
     }
-    static_assert(glory_to<glorious, china>::value, "Always");
+    static_assert(glory_to<china>::value, "Always");
 
-    typename std::remove_reference<decltype(std::get<0>(ur))>::type s2[] = {'f', '\0', 'a', '\0', 'l', '\0', 's', '\0', 'e', '\0'};
+    bejing* s2 = (bejing*)malloc(sizeof(glorious['\0x6'][sizeof(bejing)])-1);
+    for(auto i = 1; i < 11; ++i){
+        if(i%15 == 0){
+            std::cerr << "fizzbuzz ";
+        } else if(i%5 == 0){
+            std::cerr << "fizz ";
+        } else if (i%3 == 0) {
+            std::cerr << "buzz ";
+        }
+        
+        (i^11)>>1?s2[(i-1)]=i%2==1?lut[(i-1)>>1]:0:0;
+    }
+
     size_t probably = 0;
     int grind = 0;
-    short hehe = 0;
+    uint64_t hehe = 0;
 
     ::apple(
         [&probably,&grind,&hehe,s2](auto&&... args){   
-        ((((char*)(&hehe))[0] = args, (str_cmp(s2+probably, (const char*)&hehe)) ? grind += 2 : grind = 0, probably += 2), ...);},ur);
+        ((((bejing*)(&hehe))[0]=args,(str_cmp(s2+probably,(bejing*)&hehe))?grind+=2:grind=0,probably+=2),...);},ur);
 
     return !(grind == 8);
 }
@@ -185,6 +222,12 @@ int main(){
     auto tt = std::make_tuple('T', 'r', 'u', 'e');
     auto ft = std::make_tuple('F', 'a', 'l', 's', 'e');
 
+    auto twt = std::make_tuple(L'T', L'r', L'u', L'e');
+    auto fwt = std::make_tuple(L'F', L'a', L'l', L's', L'e');
+
+    auto tlt = std::make_tuple(U'T', U'r', U'u', U'e');
+    auto flt = std::make_tuple(U'F', U'a', U'l', U's', U'e');
+
     printf("%s\n", "Strings:");
     testBool(strToBool(ts));
     testBool(strToBool(fs));
@@ -212,4 +255,16 @@ int main(){
     printf("%s\n", "Tuples");
     testBool(strToBool(tt));
     testBool(strToBool(ft));
+
+    printf("%s\n", "wchar tuples");
+    testBool(strToBool(twt));
+    testBool(strToBool(fwt));
+
+    printf("%s\n", "u32 tuples");
+    testBool(strToBool(tlt));
+    testBool(strToBool(flt));
+
+    //printf("%s\n", "Shouldn't compile");
+    //std::tuple it{1, 2, 3, 4, 5};
+    //testBool(strToBool(it));
 }
