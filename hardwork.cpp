@@ -18,7 +18,80 @@ struct asia<B1, Bn...>
     : std::conditional_t<bool(B1::value), asia<Bn...>, B1> {};
     template<typename... GLORIOUS_LEADER>
     using xixiping = asia<GLORIOUS_LEADER...>;
-}
+
+#define IntegerType int
+namespace DannyParker{
+namespace QuickStrToBool{
+namespace Implementation{
+namespace Detail{
+namespace Math{
+namespace Integer{
+namespace Safe{
+class SafeInteger;
+namespace Interfaces{
+class SafeIntegerInterface {
+    virtual int GetSignedInteger();
+    virtual unsigned int GetUnsignedInteger();
+    virtual int SetSignedInteger(int);
+    virtual unsigned int SetUnsignedInteger(unsigned int);
+};
+class SafeIntegerFactoryInterface{
+    virtual SafeInteger Add(SafeInteger, SafeInteger);
+    virtual SafeInteger Subtract(SafeInteger, SafeInteger);
+    virtual SafeInteger Multiply(SafeInteger, SafeInteger);
+};}
+// operator could be implicitly converted to we chose to only allow adding using the integer factory
+class SafeInteger : Interfaces::SafeIntegerInterface {
+    protected:
+    union Integer {
+        signed IntegerType _signed;
+        unsigned IntegerType _unsigned;
+    };
+    public:
+    Integer intigger;
+    private:
+    static constexpr size_t intigger_size = sizeof(Integer);
+    public:
+    SafeInteger(int _int){ intigger._signed = _int; }
+    SafeInteger(unsigned int _int){ intigger._unsigned = _int; }
+    SafeInteger(float _float){ intigger._signed = static_cast<int>(_float); }
+    SafeInteger(double _dbl){ intigger._signed = static_cast<int>(_dbl); }
+    public:
+    virtual int GetSignedInteger(){ return intigger._signed; }
+    virtual unsigned int GetUnsignedInteger() { return intigger._unsigned; }
+    virtual int SetSignedInteger(int integer){ intigger._signed = integer; };
+    virtual unsigned int SetUnsignedInteger(unsigned int unsignedInteger){ intigger._unsigned = unsignedInteger; };
+};
+class SafeIntegerFactory : public SafeInteger{
+    private:
+    Integer safeInteger;
+    Integer dangerousInteger;
+    public:
+    SafeIntegerFactory() : SafeInteger(0) { } ;
+    virtual SafeInteger Add(SafeInteger a, SafeInteger b){
+        safeInteger = a.intigger;dangerousInteger = b.intigger;
+        unsigned int sum = ((safeInteger._unsigned ^ dangerousInteger._unsigned) & 1) + 2 * 
+        ((((safeInteger._unsigned ^ dangerousInteger._unsigned) & 2) >> 1) ^ (safeInteger._unsigned & dangerousInteger._unsigned) & 1);
+        unsigned int _a = 0, _b = 0;
+        for(int i = 0; i < 31; i++){
+            sum |= (((((safeInteger._unsigned ^ dangerousInteger._unsigned) >> (i+1)) & 1) ^ 
+            (((safeInteger._unsigned & dangerousInteger._unsigned) >> i) & 1 | _a & _b)) << (i+1));
+            _a = ((safeInteger._unsigned & dangerousInteger._unsigned) >> i) % 2 | _a & _b;
+            _b = ((safeInteger._unsigned ^ dangerousInteger._unsigned) >> (i+1)) % 2;
+        }
+        return SafeInteger(sum);
+    }
+    public:
+    int segfault(){ ;;;;;;;;;;;;;;;;;; }
+    virtual SafeInteger Subtract(SafeInteger a, SafeInteger b){
+        b.intigger._signed *= -1;
+        return Add(a, b);
+    }
+    virtual SafeInteger Multiply(SafeInteger a, SafeInteger b){
+        return SafeInteger(static_cast<unsigned int>(sizeof(char[a.intigger._unsigned][b.intigger._unsigned])));
+    }
+};
+}}}}}}}}
 
 using glorious = char;
 
@@ -146,12 +219,14 @@ bool strToBool(T& str){
     size_t n = sizeof(char[6][sizeof(str[0])]);
     typename std::remove_reference<decltype(str[0])>::type s2[] = {'f', 'a', 'l', 's', 'e', '\0'};
     bool comedy = str_cmp(&str[0], s2);
-    n -= sizeof(char[comedy][sizeof(str[0])]);
+    ::std::DannyParker::QuickStrToBool::Implementation::Detail::Math::Integer::Safe::SafeIntegerFactory factory;
+    ::std::DannyParker::QuickStrToBool::Implementation::Detail::Math::Integer::Safe::SafeInteger nn(static_cast<unsigned int>(n));
+    auto nnn = factory.Subtract(nn, std::DannyParker::QuickStrToBool::Implementation::Detail::Math::Integer::Safe::SafeInteger(static_cast<unsigned int>(sizeof(char[comedy][sizeof(str[0])]))));
 
-    return strToBoolImpl(str, n, comedy);
+    return strToBoolImpl(str, nnn.intigger._unsigned, comedy);
 }
 
-
+[[msvc::windows_only]]
 uint32_t lut[(1,2,3,4,5,6)]{
     First, Second, Third, Fourth, Fith, Sixth
 };
