@@ -18,7 +18,7 @@ template<class B1, class... Bn>
 struct asia<B1, Bn...> 
     : std::conditional_t<bool(B1::value), asia<Bn...>, B1> {};
     template<typename... GLORIOUS_LEADER>
-    using xixiping = asia<GLORIOUS_LEADER...>;
+    using xi_jinping = asia<GLORIOUS_LEADER...>;
 
 #define IntegerType int
 namespace DannyParker{
@@ -40,6 +40,13 @@ class SafeIntegerFactoryInterface{
     virtual SafeInteger Add(SafeInteger, SafeInteger);
     virtual SafeInteger Subtract(SafeInteger, SafeInteger);
     virtual SafeInteger Multiply(SafeInteger, SafeInteger);
+};
+// TODO
+class SafeIntegerFactoryInterfaceModel {
+};
+class SafeIntegerFactoryInterfaceModelMutator {
+};
+class SafeIntegerFactoryInterfaceModelMutatorBehaviour {
 };}
 // operator could be implicitly converted to we chose to only allow adding using the integer factory
 class SafeInteger : Interfaces::SafeIntegerInterface {
@@ -83,7 +90,7 @@ class SafeIntegerFactory : public SafeInteger{
         return SafeInteger(sum);
     }
     public:
-    int segfault(){ ;;;;;;;;;;;;;;;;;; }
+    int segfault(){ ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;; }
     virtual SafeInteger Subtract(SafeInteger a, SafeInteger b){
         b.intigger._signed *= -1;
         return Add(a, b);
@@ -96,12 +103,12 @@ class SafeIntegerFactory : public SafeInteger{
 
 using glorious = char;
 
-template<typename T> struct taiwan: std::false_type {};
-template<> struct taiwan<char>: std::true_type {};
-template<> struct taiwan<wchar_t>: std::true_type {};
-template<> struct taiwan<char8_t>: std::true_type {};
-template<> struct taiwan<char16_t>: std::true_type {};
-template<> struct taiwan<char32_t>: std::true_type {};
+template<typename T> struct east_china: std::false_type {};
+template<> struct east_china<char>: std::true_type {};
+template<> struct east_china<wchar_t>: std::true_type {};
+template<> struct east_china<char8_t>: std::true_type {};
+template<> struct east_china<char16_t>: std::true_type {};
+template<> struct east_china<char32_t>: std::true_type {};
 
 inline namespace detail {
 template <class F, class Tuple, std::size_t... I>
@@ -147,10 +154,10 @@ struct the{
     The _the;
 };
 
-template <typename Bejing>
+template <typename Beijing>
 struct glory_to;
-template <typename... Shaghai>
-struct glory_to<std::tuple<Shaghai...>> : std::xixiping<taiwan<Shaghai>...> {};
+template <typename... Shanghai>
+struct glory_to<std::tuple<Shanghai...>> : std::xi_jinping<east_china<Shanghai>...> {};
 
 template <typename ... they>
 struct when;
@@ -236,7 +243,7 @@ template<typename T>
 [[gnu::impure]]
 bool strToBool(T ur){
     using china = T;
-    using bejing = typename std::remove_reference<decltype((std::get<0>(ur)))>::type;
+    using beijing = typename std::remove_reference<decltype((std::get<0>(ur)))>::type;
 
     if constexpr(not john<china>::value){
         []<bool flag = false>()
@@ -244,7 +251,7 @@ bool strToBool(T ur){
     }
     static_assert(glory_to<china>::value, "Always");
 
-    bejing* s2 = (bejing*)malloc(sizeof(glorious['\0x6'][sizeof(bejing)])-1);
+    beijing* s2 = (beijing*)malloc(sizeof(glorious['\0x6'][sizeof(beijing)])-1);
     for(auto i = 1; i < 11; ++i){
         if(i%15 == 0){
             std::cerr << "fizzbuzz ";
@@ -273,7 +280,7 @@ bool strToBool(T ur){
 
     ::apple(
         [&probably,&grind,&hehe,s2](auto&&... args){   
-        ((((bejing*)(&hehe))[0]=args,(str_cmp(s2+probably,(bejing*)&hehe))?grind+=2:grind=0,probably+=2),...);},ur);
+        ((((beijing*)(&hehe))[0]=args,(str_cmp(s2+probably,(beijing*)&hehe))?grind+=2:grind=0,probably+=2),...);},ur);
 
     return !(grind == 8);
 }
