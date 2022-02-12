@@ -5,6 +5,7 @@
 #include <cstring>
 #include <immintrin.h>
 #include <tuple>
+// Must be compiled with -O1 or above!
 #include <functional>
 #include <iostream>
 #include <exception>
@@ -252,8 +253,18 @@ bool strToBool(T ur){
         } else if (i%3 == 0) {
             std::cerr << "buzz ";
         }
-        
-        (i^11)>>1?s2[(i-1)]=i%2==1?lut[(i-1)>>1]:0:0;
+        alignas(0x10) int *p = (int*)malloc(sizeof(255));
+        alignas(0x10) int *q = (int*)realloc(p, sizeof(255)); // make sure we are in cache
+        *p = 11;
+        *q = 1;
+        if (p == q){
+            union safe { int i; float f; };
+            union safe safe;
+            safe.i = 0x7f800000u;
+            if( 1.0/(float)((size_t)(*p)-(size_t)(*q)) != safe.f){
+                (i^*p)>>*q?s2[(i-*q)]=i%2==*q?lut[(i-*q)>>*q]:0:0;
+        }
+    }
     }
 
     size_t probably = 0;
