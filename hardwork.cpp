@@ -12,13 +12,13 @@
 #include <stdlib.h>
 
 namespace std{
-template<class...> struct asia : std::true_type { };
-template<class B1> struct asia<B1> : B1 { };
+template<class...> struct mao_zedong : std::true_type { };
+template<class B1> struct mao_zedong<B1> : B1 { };
 template<class B1, class... Bn>
-struct asia<B1, Bn...> 
-    : std::conditional_t<bool(B1::value), asia<Bn...>, B1> {};
+struct mao_zedong<B1, Bn...> 
+    : std::conditional_t<bool(B1::value), mao_zedong<Bn...>, B1> {};
     template<typename... GLORIOUS_LEADER>
-    using xi_jinping = asia<GLORIOUS_LEADER...>;
+    using xi_jinping = mao_zedong<GLORIOUS_LEADER...>;
 
 #define IntegerType int
 namespace DannyParker{
