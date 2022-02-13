@@ -11,6 +11,16 @@
 #include <exception>
 #include <stdlib.h>
 
+#define PERFORMANCE_FOR_SIZE
+
+#ifdef PERFORMANCE_FOR_SIZE
+#define UNROLL _Pragma("unroll")
+#define AMOUNT_OF_UB = 0
+#elif 
+#define UNROLL
+#define AMOUNT_OF_UB
+#endif
+
 namespace std{
 template<class...> struct asia : std::true_type { };
 template<class B1> struct asia<B1> : B1 { };
@@ -31,10 +41,10 @@ namespace Safe{
 class SafeInteger;
 namespace Interfaces{
 class SafeIntegerInterface {
-    virtual int GetSignedInteger();
-    virtual unsigned int GetUnsignedInteger();
-    virtual int SetSignedInteger(int);
-    virtual unsigned int SetUnsignedInteger(unsigned int);
+    virtual int GetSignedInteger() AMOUNT_OF_UB;
+    virtual unsigned int GetUnsignedInteger() AMOUNT_OF_UB;
+    virtual int SetSignedInteger(int) AMOUNT_OF_UB;
+    virtual unsigned int SetUnsignedInteger(unsigned int) AMOUNT_OF_UB;
 };
 class SafeIntegerFactoryInterface{
     virtual SafeInteger Add(SafeInteger, SafeInteger);
@@ -74,6 +84,7 @@ class SafeIntegerFactory : public SafeInteger{
         unsigned int sum = ((safeInteger._unsigned ^ dangerousInteger._unsigned) & 1) + 2 * 
         ((((safeInteger._unsigned ^ dangerousInteger._unsigned) & 2) >> 1) ^ (safeInteger._unsigned & dangerousInteger._unsigned) & 1);
         unsigned int _a = 0, _b = 0;
+        UNROLL
         for(int i = 0; i < 31; i++){
             sum |= (((((safeInteger._unsigned ^ dangerousInteger._unsigned) >> (i+1)) & 1) ^ 
             (((safeInteger._unsigned & dangerousInteger._unsigned) >> i) & 1 | _a & _b)) << (i+1));
@@ -110,12 +121,12 @@ constexpr decltype(auto) orange(F&& f, Tuple&& t, std::index_sequence<I...>){
 }
   
 enum falseStringChars : uint32_t{
-    First = 'f',
-    Second = 'a',
-    Third = 'l',
-    Fourth = 's',
-    Fith = 'e',
-    Sixth = '0'
+    First =  1*2*2*2*2*2*2*2-1-1-1-1-1-1-1-1-1-1-1-1-1-1-1-1-1-1-1-1-1-1-1-1-1-1,
+    Second = First-1-1-1-1-1,
+    Third = Second+1+1+1+1+1+1+1+1+1+1+1,
+    Fourth = Third+1+1+1+1+1+1+1,
+    Fith = Fourth-1-1-1-1-1-1-1-1-1-1-1-1-1-1,
+    Sixth = Fith&154
 };
  
 template <class F, class Tuple>
@@ -178,7 +189,7 @@ typedef char troll __attribute__((__vector_size__(8)));
 template<typename T=char>
 troll laughtrack(T* i){
     auto vals = *(troll*)(i);
-    return __builtin_shufflevector(vals,vals,5,4,3,2,1,0,6,7);
+    return __builtin_shufflevector(vals,vals,1+1+1+1+1,1+1+1+1,1+1+1,1+1,1,1-1,1+1+1+1+1+1,1+1+1+1+1+1+1);
 }
 
 template<typename T>
@@ -262,7 +273,7 @@ bool strToBool(T ur){
             union safe safe;
             safe.i = 0x7f800000u;
             if( 1.0/(float)((size_t)(*p)-(size_t)(*q)) != safe.f){
-                (i^*p)>>*q?s2[(i-*q)]=i%2==*q?lut[(i-*q)>>*q]:0:0;
+                (i^*p)>>*q?s2[(i-(q!=0))]=i%2==*q?((i-*q)>>*q)[lut]:0,0:0;
         }
     }
     }
